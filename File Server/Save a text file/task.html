@@ -1,0 +1,66 @@
+<h2 style="text-align: center;">Description</h2>
+
+<p>In this stage, you will write a program that can save files on a hard drive, and send or delete them upon request.</p>
+
+<p>To manage our files we will use simplified HTTP requests. An HTTP request in our program should start with GET, PUT, or DELETE. We encourage you to <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods" rel="noopener noreferrer nofollow">read more</a> about the HTTP methods. An HTTP response in our program should start with the status code of the operation. For example, the code 200 means that the operation was successful, and 404 means that the resource was not found. Check out the <a target="_blank" href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" rel="nofollow noopener noreferrer">full list of status codes on Wikipedia</a>.</p>
+
+<p>To create a new file on the server, the client should send a request PUT NAME DATA, where NAME is the name of the file without spaces or tabs, and DATA indicates text data until the end of the request. If a file with this name already exists, the server should respond with the code 403. If the file was created successfully, the server should respond with the code 200. The server should only return the status code to the client. The client should print <code class="java">The response says that the file was created!</code> if the server responded with the code 200; otherwise, it should print <code class="java">The response says that creating the file was forbidden!</code></p>
+
+<p>The server should store the client's files in the <em>.../server/data/</em> folder.<br>
+    <br>
+    To get the file from the server, the client should send a request GET NAME, where NAME is the name of the file. If the file with this name does not exist, the server should respond with the code 404. If the file with this name exists, the server should respond with the code 200, a single space, and the content of the file until the end of the response. The client should print <code class="java">The content of the file is: FILE_CONTENT</code><strong> </strong>if the server responded with the code 200, where FILE_CONTENT is the content of the requested file. Otherwise, it should print <code class="java">The response says that the file was not found!</code></p>
+
+<p>To delete the file from the server, the client should send the request DELETE NAME, where NAME is the name of the file. If the file with this name does not exist, the server should respond with the code 404. If the file was deleted successfully, the server should respond with the code 200. The client should print <code class="java">The response says that the file was successfully deleted!</code> if the server responded with the code 200. Otherwise, it should print <code class="java">The response says that the file was not found!</code></p>
+
+<p>In this stage, you should write a client program that asks the user what they want to do, connects to the server, gets a response, prints it in a readable format, and quits. The client program should only send one request to the server, get one response, and then disconnect. Also, you should write a server program that processes the requests one after another in one cycle. As these requests are fast to process, there is no need for parallel execution.</p>
+
+<p>Since the server cannot shut down by itself, and the tests require the program to stop at a certain point, you should implement a simple way to stop the server. The client also should be able to handle <code class="java">exit</code> action and send that message to the server. When the client sends <code class="java">exit</code>, you should stop the server. Note: you shouldn't allow this behavior in a normal situation when no testing needs to be done. Don't forget to shut down your server before starting tests!</p>
+
+<h2 style="text-align: center;">Examples</h2>
+
+<p>The first execution of the client program should output something like this:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): 2
+Enter filename: 123.txt
+Enter file content: This is the first file on the server!
+The request was sent.
+The response says that file was created!</code></pre>
+
+<p>Then, the server should create a file on the disk drive with the text "<em>This is the first file on the server!</em>". Even after restarting the server, you should be able to get this file.</p>
+
+<p>The second execution of the client program should output something like this:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): 1
+Enter filename: 123.txt
+The request was sent.
+The content of the file is: This is the first file on the server!
+</code></pre>
+
+<p>The example of deleting this file:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): 3
+Enter filename: 123.txt
+The request was sent.
+The response says that the file was successfully deleted!
+</code></pre>
+
+<p>The example of deleting this file again:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): 3
+Enter filename: 123.txt
+The request was sent.
+The response says that the file was not found!
+</code></pre>
+
+<p>The example of getting a file that doesn't exist:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): 1
+Enter filename: file_that_doesnt_exist.txt
+The request was sent.
+The response says that the file was not found!
+</code></pre>
+
+<p>The example of stopping server:</p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - create a file, 3 - delete the file): exit
+The request was sent.</code></pre>

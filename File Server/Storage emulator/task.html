@@ -1,0 +1,35 @@
+<h2 style="text-align: center;">Description</h2>
+
+<p>An HTTP File Server is like remote file storage. You can access your files from anywhere in the world if you have Internet access. In this project, you will write your own file keeper that will let you save, access, and delete files.</p>
+
+<p>Let's start by simulating a file storage that can save only 10 files named <em>file1, file2, file3, ... file10</em>. At first, when the file server just starts, there are no files: you add them using a command <code class="java">add NAME</code>, where NAME is the actual name of the file. If this file already exists or has the wrong name, output <code class="java">Cannot add the file NAME</code>; otherwise, output <code class="java">The file NAME added successfully</code>.</p>
+
+<p>If you want to retrieve the saved file, input <code class="java">get NAME</code>, where NAME is the actual name of the file. If this file exists, output <code class="java">The file NAME was sent</code>; otherwise, output <code class="java">The file NAME not found</code>.</p>
+
+<p>If you want to delete the file, input <code class="java">delete NAME</code>. If this file exists, output <code class="java">The file NAME was deleted</code>; otherwise, output <code class="java">The file NAME not found</code>.</p>
+
+<p>Inputting <code class="java">exit</code> should terminate the program.</p>
+
+<h2 style="text-align: center;">Example</h2>
+
+<p>Below is an output example of the described program. Try to output all the cases, like in the example.</p>
+
+<p>The greater-than symbol followed by a space (<code class="java">&gt; </code>) represents the user input. Note that it's not the part of the input.</p>
+
+<pre><code class="java">&gt; add file1
+The file file1 added successfully
+&gt; add file1
+Cannot add the file file1
+&gt; add file11
+Cannot add the file file11
+&gt; get file1
+The file file1 was sent
+&gt; get file2
+The file file2 not found
+&gt; get abcd1
+The file abcd1 not found
+&gt; delete file2
+The file file2 not found
+&gt; delete file1
+The file file1 was deleted
+&gt; exit</code></pre>

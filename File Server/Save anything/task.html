@@ -1,0 +1,81 @@
+<h2 style="text-align: center;">Description</h2>
+
+<p>In this stage, you will write a program that sends real text files and pictures to the server. The server keeps the files and sends them back on request until you decide to delete them.</p>
+
+<p>Also, the server should be able to recognize each file by its unique identifier. If the file was created successfully, the server should send the integer identifier after the code 200 and a single space. If the creation of the file failed, no identifier is needed.</p>
+
+<p>From now on, you'll be able to get a file from the server using only its identifier! To get the file in the old format, you can use the filename. To achieve that, after <code class="language-java">GET</code> or <code class="language-java">DELETE</code> you should specify whether you want to get the file by the id or the name. Let's use <code class="language-java">BY_ID</code> and <code class="language-java">BY_NAME</code> as keywords. Every time you want to get a file from the server, you can send either <code class="language-java">GET BY_ID 12</code> or <code class="language-java">GET BY_NAME filename.txt</code>. The same applies to <code class="language-java">DELETE BY_ID</code> and <code class="language-java">DELETE BY_NAME</code>.<br>
+    Note that you don't need these keywords with the <code class="language-java">PUT</code> method: you just want to save a new file to the server. After that, the server sends you a new id.</p>
+
+<p>Of course, the sizes of the files are much larger than one line of text. The process of saving larger files may take a while, so you should use a parallel approach. For example, you may want to use executors. So, every time the client sends a request, you should perform the task of the request in the thread pool, not in the main thread. The main thread should just wait for another request. Note that the map from the identifiers to the text names should be used synchronously because different threads have access to it. Do not forget to save this map somewhere because you don't want to lose it when the server reboots. After rebooting the server, check that the ID generation does not begin from the beginning.</p>
+
+<p>Notice that you can't send bytes via text stream because while bytes require a single-byte stream, a text stream is variable-byte (this is because Strings in Java are encoded in UTF format when they are sent using DataInputStream). So, you should send the byte array itself, not the bytes encoded as text. When you receive an array of bytes, you can't really say where the end of the stream is, unlike <code class="language-java">readUTF</code> where you read only one string at a time. This problem can be solved by adding the number of bytes in the stream before the start of the stream. The sender calculates and sends this number, and then sends the byte stream. The receiver reads the number and then reads the stream with the specified number of bytes. You can use the snippet from <a target="_blank" href="https://stackoverflow.com/questions/1176135/socket-send-and-receive-byte-array" rel="nofollow noopener noreferrer">stack overflow</a> to understand how to do this:</p>
+
+<pre><code class="language-java">byte[] message = ...
+Socket socket = ...
+DataOutputStream output = ...
+
+/* after writing some other data */
+
+output.writeInt(message.length); // write length of the message
+output.write(message);           // write the message</code></pre>
+
+<pre><code class="language-java">Socket socket = ...
+DataInputStream input = ...
+
+/* after reading some other data */
+
+int length = input.readInt();                // read length of incoming message
+byte[] message = new byte[length];
+input.readFully(message, 0, message.length); // read the message
+</code></pre>
+
+<p>In this stage, you should write a client program that asks the user what they want to do. If they want to save a file to the server, the program should ask the user which file from the <em>../client/data</em> needs to be saved. After that, the user should specify the name of the file to be saved on the server. This name should not contain spaces or tabs. If the user doesn't want to specify a name, they should just press enter without typing anything. The server should generate a unique name for this file and send back the id. The file should be saved in the <em>.../server/data/</em> folder. Create your own implementation of this behavior.<br>
+    <br>
+    If the user wants to get a file, the client program should ask if the user wants to type the id or the name of the file. After entering an id or name, the user must enter the name under which the file should be saved. The file should be saved in the <em>.../client/data/</em> folder.<br>
+    <br>
+    If the user wants to delete the file, the client program should ask if the user wants to type the id or the name of the file. After either the id or the name has been entered, the program should send the request to the server.</p>
+
+<p>Since the server cannot shut down by itself, and tests require the program to stop at a certain point, you should implement a simple way to stop the server. The client also should be able to handle <code class="language-java">exit</code> action and send that message to the server. When the client sends <code class="language-java">exit</code>, you should stop the server. Note: you shouldn't allow this behavior in a normal situation when no testing needs to be done.</p>
+
+<h2 style="text-align: center;">Examples</h2>
+
+<p><strong>Example 1</strong></p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - save the file, 3 - delete the file): 2
+Enter name of the file: my_cat.jpg
+Enter name of the file to be saved on server:
+The request was sent.
+Response says that file is saved! ID = 23</code></pre>
+
+<p><strong>Example 2</strong></p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - save the file, 3 - delete the file): 1
+Do you want to get the file by name or by id (1 - name, 2 - id): 2
+Enter id: 23
+The request was sent.
+The file was downloaded! Specify a name for it: cat.jpg
+File saved on the hard drive!</code></pre>
+
+<p><strong>Example 3</strong></p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - save the file, 3 - delete the file): 3
+Do you want to delete the file by name or by id (1 - name, 2 - id): 2
+Enter id: 23
+The request was sent.
+The response says that this file was deleted successfully!</code></pre>
+
+<p><strong>Example 4</strong></p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - save the file, 3 - delete the file): 3
+Do you want to delete the file by name or by id (1 - name, 2 - id): 2
+Enter id: 23
+The request was sent.
+The response says that this file is not found!
+</code></pre>
+
+<p><strong>Example 5</strong></p>
+
+<pre><code class="language-no-highlight">Enter action (1 - get the file, 2 - save the file, 3 - delete the file): exit
+The request was sent.
+</code></pre>

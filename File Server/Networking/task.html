@@ -1,0 +1,56 @@
+<h2 style="text-align: center;">Description</h2>
+
+<p>Our objective is that the files stored on our file server are accessible through the Internet. To achieve that, our file server, which handles the storage of our files and processing of client requests, should be one program; and the client, which will be used to make requests to create, get, and delete files on our server, should be its own, separate program.</p>
+
+<p>Let's consider an important term for this stage: <strong>socket</strong>. A socket is an interface to send and receive data between different processes. These processes can be on the same computer or different computers connected through the Internet.</p>
+
+<p>In this stage, you will implement the simplest connection between one server and one client. The client should send the message "<em>Give me everything you have!</em>" to the server, and the server should reply "<em>All files were sent!</em>" to the client. Both the client and the server should print the received messages to the console.</p>
+
+<p>Before a client connects to the server, the server output should be <code class="language-java">'Server started!'</code>.</p>
+
+<p>To connect to the server, the client must know the address of the server. The address consists of two parts: IP-address and port. If you call the IP address 127.0.0.1 then you are communicating with the localhost – in principle, with your own computer, so you can use this address in your program. The port can be any number from 0 to 65535, but preferably greater than 1024. The IP address and port of the client and the server should be the same; otherwise, the client won't find the server, and the server won't know about the client.</p>
+
+<p>To start, import <code class="language-java">java.io.*</code> and <code class="language-java">java.net.*</code> to avoid importing problems.</p>
+
+<p>Let's take a look at the client-side code:</p>
+
+<pre><code class="language-java">String address = "127.0.0.1";
+int port = 23456;
+Socket socket = new Socket(InetAddress.getByName(address), port);
+DataInputStream input = new DataInputStream(socket.getInputStream());
+DataOutputStream output = new DataOutputStream(socket.getOutputStream());</code></pre>
+
+<p>The client creates a new socket, meaning that they're trying to connect to the server. The successful creation of a socket means that the client has found the server and connected to it.</p>
+
+<p>After that, you can see the creation of the <code class="language-java">DataInputStream</code> and <code class="language-java">DataOutputStream</code> objects. These are input and output connections to the server. If you expect data from the server, you need to write <code class="language-java">input.readUTF().</code> This returns the String object that the server sent to the client. If you want to send data to the server, you need to write <code class="language-java">output.writeUTF(stringText)</code>, and the message will be sent to the server.</p>
+
+<p>Now let's look at the server-side code:</p>
+
+<pre><code class="language-java">String address = "127.0.0.1";
+int port = 23456;
+ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName(address));
+Socket socket = server.accept();
+DataInputStream input = new DataInputStream(socket.getInputStream());
+DataOutputStream output  = new DataOutputStream(socket.getOutputStream());</code></pre>
+
+<p>The server creates a ServerSocket object that waits for the client connections. When a client connects, the <code class="language-java">server.accept()</code> method returns the Socket connection to the client. After that, you can see the creation of the <code class="language-java">DataInputStream</code> and <code class="language-java">DataOutputStream</code> objects: the input and output connections to the client, now from the server side. To receive data from the client, you need to write <code class="language-java">input.readUTF()</code>. To send data to the client, write <code class="language-java">output.writeUTF(stringText)</code>.</p>
+
+<p>Don't forget to close all the sockets and streams in the end!</p>
+
+<p>For this stage, you should create two packages named <code class="language-java">client</code> and <code class="language-java">server</code>, and then create <code class="language-java">Main.java</code> in both of these packages. Both classes should contain the <code class="language-java">public static void main(String[] args)</code> method. To run the server, just run <code class="language-java">main</code> from the <code class="language-java">server</code> package. To run the client, run <code class="language-java">main</code> from the <code class="language-java">client</code> package. The tests depend on the existence of these classes!</p>
+
+<h2 style="text-align: center;">Example</h2>
+
+<p>The server output should look like this:</p>
+
+<pre><code class="language-java">Server started!
+Received: Give me everything you have!
+Sent: All files were sent!
+</code></pre>
+
+<p>The client output should look like this:</p>
+
+<pre><code class="language-java">Client started!
+Sent: Give me everything you have!
+Received: All files were sent!
+</code></pre>
